@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion, useScroll, useAnimation } from "framer-motion";
 import { Link, useMatch } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import userEvent from "@testing-library/user-event";
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -61,18 +62,26 @@ const Circle = styled(motion.span)`
 `;
 const Search = styled.span`
   color: white;
-  svg {
-    height: 25px;
-  }
   display: flex;
   align-items: center;
   position: relative;
+  svg {
+    height: 25px;
+  }
 `;
 
 const Input = styled(motion.input)`
   transform-origin: right center;
   position: absolute;
-  left: -170px;
+  left: -150px;
+  right: 0px;
+  padding: 5px 10px;
+  padding-left: 40px;
+  z-index: -1;
+  color: white;
+  font-size: 16px;
+  background-color: transparent;
+  border: 1px solid ${(props) => props.theme.white.lighter};
 `;
 const logoVariants = {
   normal: {
@@ -88,11 +97,25 @@ const logoVariants = {
 function Header() {
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("/tv");
+  const navAnimation = useAnimation();
   const [searchOpen, setSearchOpen] = useState(false);
+  const { scrollY } = useScroll();
   const openSearch = () => setSearchOpen(!searchOpen);
-
+  useEffect(() => {
+    scrollY.onChange(() => {
+      if (scrollY.get() > 80) {
+        navAnimation.start({
+          backgroundColor: "rgba(0,0,0,1)",
+        });
+      } else {
+        navAnimation.start({
+          backgroundColor: "rgba(0,0,0,0)",
+        });
+      }
+    });
+  }, [scrollY]);
   return (
-    <Nav>
+    <Nav animate={navAnimation} initial={{ backgroundColor: "rgba(0,0,0,1)" }}>
       <Col>
         <Logo
           variants={logoVariants}
@@ -118,9 +141,10 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search onClick={openSearch}>
+        <Search>
           <motion.svg
-            animate={{ x: searchOpen ? -200 : 0 }}
+            onClick={openSearch}
+            animate={{ x: searchOpen ? -185 : 0 }}
             transition={{ type: "linear" }}
             fill="currentColor"
             viewBox="0 0 20 20"
