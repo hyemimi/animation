@@ -2,7 +2,7 @@ import { getMovies, IgetMoviesResult } from "../api";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import { makeImagePath } from "../utills";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 
@@ -113,14 +113,12 @@ const InfoVariants = {
 const offset = 6;
 
 const BigMovie = styled(motion.div)`
-  position: fixed;
-  width: 60vw;
-  height: 70vh;
-  top: 0;
-  bottom: 0;
+  position: absolute;
+  width: 40vw;
+  height: 80vh;
   left: 0;
   right: 0;
-  margin: auto;
+  margin: 0 auto;
   background-color: ${(props) => props.theme.black.darker};
   border-radius: 15px;
   overflow: hidden;
@@ -137,12 +135,19 @@ const BigCover = styled.div`
   width: 100%;
   background-size: cover;
   background-position: center center;
-  height: 500px;
+  height: 400px;
 `;
 const BigTitle = styled.h2`
   color: ${(props) => props.theme.white.lighter};
-  text-align: center;
-  font-size: 36px;
+  padding: 20px;
+  font-size: 46px;
+  position: relative;
+  top: -60px;
+`;
+const BigOverview = styled.p`
+  padding: 20px;
+  top: -80px;
+  color: ${(props) => props.theme.white.lighter};
 `;
 function Home() {
   const navigate = useNavigate();
@@ -154,6 +159,7 @@ function Home() {
   );
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const { scrollY } = useScroll();
   const increaseIndex = () => {
     if (data) {
       if (leaving) return;
@@ -234,18 +240,22 @@ function Home() {
                     exit={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
-                    <BigMovie layoutId={bigMovieMatch?.params.movieId}>
+                    <BigMovie
+                      style={{ top: scrollY.get() + 50 }}
+                      layoutId={bigMovieMatch?.params.movieId}
+                    >
                       {clickedMovie && (
                         <>
                           <BigCover
                             style={{
-                              backgroundImage: `url(${makeImagePath(
+                              backgroundImage: `linear-gradient(to top,black,transparent), url(${makeImagePath(
                                 clickedMovie.backdrop_path,
                                 "w500"
                               )})`,
                             }}
                           />
                           <BigTitle>{clickedMovie.title}</BigTitle>
+                          <BigOverview>{clickedMovie.overview}</BigOverview>
                         </>
                       )}
                     </BigMovie>
