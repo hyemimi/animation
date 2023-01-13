@@ -4,11 +4,8 @@ import styled from "styled-components";
 import { makeImagePath } from "../utills";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-<<<<<<< Updated upstream
-=======
 import { moveEmitHelpers } from "typescript";
 import { useMatch, useNavigate } from "react-router-dom";
->>>>>>> Stashed changes
 const Wrapper = styled.div`
   background: black;
 `;
