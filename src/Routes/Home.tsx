@@ -112,6 +112,19 @@ const InfoVariants = {
 };
 const offset = 6;
 
+const BigMovie = styled(motion.div)`
+  position: fixed;
+  width: 60vw;
+  height: 70vh;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-color: ${(props) => props.theme.black.darker};
+  border-radius: 15px;
+  overflow: hidden;
+`;
 const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -120,8 +133,20 @@ const Overlay = styled(motion.div)`
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
 `;
+const BigCover = styled.div`
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  height: 500px;
+`;
+const BigTitle = styled.h2`
+  color: ${(props) => props.theme.white.lighter};
+  text-align: center;
+  font-size: 36px;
+`;
 function Home() {
   const navigate = useNavigate();
+
   const bigMovieMatch = useMatch("/movies/:movieId");
   const { data, isLoading } = useQuery<IgetMoviesResult>(
     ["movies", "nowPlaying"],
@@ -139,7 +164,13 @@ function Home() {
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    data?.results.find(
+      (movie) => movie.id + "" === bigMovieMatch.params.movieId
+    );
 
+  console.log(clickedMovie);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
     navigate(`/movies/${movieId}`);
@@ -203,19 +234,21 @@ function Home() {
                     exit={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
-                    <motion.div
-                      layoutId={bigMovieMatch?.params.movieId}
-                      style={{
-                        position: "absolute",
-                        width: "40vw",
-                        height: "80vh",
-                        backgroundColor: "red",
-                        top: 50,
-                        left: 0,
-                        right: 0,
-                        margin: "0 auto",
-                      }}
-                    />
+                    <BigMovie layoutId={bigMovieMatch?.params.movieId}>
+                      {clickedMovie && (
+                        <>
+                          <BigCover
+                            style={{
+                              backgroundImage: `url(${makeImagePath(
+                                clickedMovie.backdrop_path,
+                                "w500"
+                              )})`,
+                            }}
+                          />
+                          <BigTitle>{clickedMovie.title}</BigTitle>
+                        </>
+                      )}
+                    </BigMovie>
                   </Overlay>
                 </>
               ) : null}
