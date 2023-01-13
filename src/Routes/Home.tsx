@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { makeImagePath } from "../utills";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { moveEmitHelpers } from "typescript";
+import { useMatch, useNavigate } from "react-router-dom";
 const Wrapper = styled.div`
   background: black;
 `;
@@ -60,6 +62,7 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   &: last-child {
     transform-origin: center right;
   }
+  cursor: pointer;
 `;
 const Info = styled(motion.div)`
   padding: 10px;
@@ -109,7 +112,17 @@ const InfoVariants = {
 };
 const offset = 6;
 
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+`;
 function Home() {
+  const navigate = useNavigate();
+  const bigMovieMatch = useMatch("/movies/:movieId");
   const { data, isLoading } = useQuery<IgetMoviesResult>(
     ["movies", "nowPlaying"],
     getMovies
@@ -128,7 +141,12 @@ function Home() {
   };
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  console.log(index);
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
+  const onOverlayClick = () => {
+    navigate("/");
+  };
   return (
     <>
       <Wrapper>
@@ -158,6 +176,10 @@ function Home() {
                     .slice(offset * index, offset * index + offset)
                     .map((movie) => (
                       <Box
+                        layoutId={movie.id + ""}
+                        onClick={() => {
+                          onBoxClicked(movie.id);
+                        }}
                         transition={{ type: "tween" }}
                         key={movie.id}
                         whileHover="hover"
@@ -173,6 +195,31 @@ function Home() {
                 </Row>
               </AnimatePresence>
             </Slider>
+            <AnimatePresence>
+              {bigMovieMatch ? (
+                <>
+                  <Overlay
+                    onClick={onOverlayClick}
+                    exit={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <motion.div
+                      layoutId={bigMovieMatch?.params.movieId}
+                      style={{
+                        position: "absolute",
+                        width: "40vw",
+                        height: "80vh",
+                        backgroundColor: "red",
+                        top: 50,
+                        left: 0,
+                        right: 0,
+                        margin: "0 auto",
+                      }}
+                    />
+                  </Overlay>
+                </>
+              ) : null}
+            </AnimatePresence>
           </>
         )}
       </Wrapper>

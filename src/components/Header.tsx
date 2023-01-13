@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { motion, useScroll, useAnimation } from "framer-motion";
 import { Link, useMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
-import userEvent from "@testing-library/user-event";
 
 const Nav = styled(motion.nav)`
   display: flex;
