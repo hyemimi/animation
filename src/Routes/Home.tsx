@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { makeImagePath } from "../utills";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { moveEmitHelpers } from "typescript";
 const Wrapper = styled.div`
   background: black;
 `;
