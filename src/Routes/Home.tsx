@@ -8,6 +8,7 @@ import { useMatch, useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   background: black;
+  padding-bottom: 200px;
 `;
 
 const Loader = styled.div`
@@ -32,7 +33,7 @@ const Title = styled.h2`
   margin-bottom: 20px;
 `;
 const Overview = styled.p`
-  font-size: 36px;
+  font-size: 30px;
   width: 50%;
 `;
 const Slider = styled.div`
@@ -54,7 +55,7 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   height: 200px;
 
   background-size: cover;
-  background-position: center;
+  background-position: center center;
   font-size: 66px;
   &: first-child {
     transform-origin: center left;
@@ -78,13 +79,13 @@ const Info = styled(motion.div)`
 `;
 const rowVariants = {
   hidden: {
-    x: window.outerWidth + 10,
+    x: window.outerWidth + 5,
   },
   visible: {
     x: 0,
   },
   exit: {
-    x: -window.outerWidth - 10,
+    x: -window.outerWidth - 5,
   },
 };
 const BoxVariants = {
@@ -93,10 +94,11 @@ const BoxVariants = {
   },
   hover: {
     scale: 1.3,
-    y: -50,
+    y: -80,
     transition: {
       type: "tween",
-      delay: 0.3,
+      delay: 0.5,
+      duration: 0.1,
     },
   },
 };
@@ -106,7 +108,8 @@ const InfoVariants = {
 
     transition: {
       type: "tween",
-      delay: 0.3,
+      delay: 0.5,
+      duration: 0.1,
     },
   },
 };
@@ -142,7 +145,7 @@ const BigTitle = styled.h2`
   padding: 20px;
   font-size: 46px;
   position: relative;
-  top: -60px;
+  top: -80px;
 `;
 const BigOverview = styled.p`
   padding: 20px;
@@ -239,27 +242,26 @@ function Home() {
                     onClick={onOverlayClick}
                     exit={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
+                  />
+                  <BigMovie
+                    style={{ top: scrollY.get() + 100 }}
+                    layoutId={bigMovieMatch?.params.movieId}
                   >
-                    <BigMovie
-                      style={{ top: scrollY.get() + 50 }}
-                      layoutId={bigMovieMatch?.params.movieId}
-                    >
-                      {clickedMovie && (
-                        <>
-                          <BigCover
-                            style={{
-                              backgroundImage: `linear-gradient(to top,black,transparent), url(${makeImagePath(
-                                clickedMovie.backdrop_path,
-                                "w500"
-                              )})`,
-                            }}
-                          />
-                          <BigTitle>{clickedMovie.title}</BigTitle>
-                          <BigOverview>{clickedMovie.overview}</BigOverview>
-                        </>
-                      )}
-                    </BigMovie>
-                  </Overlay>
+                    {clickedMovie && (
+                      <>
+                        <BigCover
+                          style={{
+                            backgroundImage: `linear-gradient(to top,black,transparent), url(${makeImagePath(
+                              clickedMovie.backdrop_path,
+                              "w500"
+                            )})`,
+                          }}
+                        />
+                        <BigTitle>{clickedMovie.title}</BigTitle>
+                        <BigOverview>{clickedMovie.overview}</BigOverview>
+                      </>
+                    )}
+                  </BigMovie>
                 </>
               ) : null}
             </AnimatePresence>
