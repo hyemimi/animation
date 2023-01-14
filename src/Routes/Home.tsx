@@ -1,4 +1,11 @@
-import { getMovies, IgetMoviesResult } from "../api";
+import {
+  getLatest,
+  getMovies,
+  getTopRated,
+  IgetLatestMovies,
+  IgetMoviesResult,
+  IgetRatedResults,
+} from "../api";
 import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import { makeImagePath } from "../utills";
@@ -36,9 +43,9 @@ const Overview = styled.p`
   font-size: 30px;
   width: 50%;
 `;
-const Slider = styled.div`
+const Slider = styled.div<{ topsize: string }>`
   position: relative;
-  top: -100px;
+  top: ${(props) => props.topsize};
 `;
 
 const Row = styled(motion.div)`
@@ -147,6 +154,14 @@ const BigTitle = styled.h2`
   position: relative;
   top: -80px;
 `;
+const LatestBox = styled(motion.div)`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  width: 100%;
+  position: absolute;
+  background-color: white;
+`;
 const BigOverview = styled.p`
   padding: 20px;
   top: -80px;
@@ -160,6 +175,15 @@ function Home() {
     ["movies", "nowPlaying"],
     getMovies
   );
+  const { data: latest } = useQuery<IgetLatestMovies>(
+    ["movies", "latestMovies"],
+    getLatest
+  );
+  const { data: toprated } = useQuery<IgetRatedResults>(
+    ["movies", "topratedMovies"],
+    getTopRated
+  );
+
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const { scrollY } = useScroll();
@@ -178,8 +202,12 @@ function Home() {
     data?.results.find(
       (movie) => movie.id + "" === bigMovieMatch.params.movieId
     );
+  const clickedratedMovie =
+    bigMovieMatch?.params.movieId &&
+    toprated?.results.find(
+      (movie) => movie.id + "" === bigMovieMatch.params.movieId
+    );
 
-  console.log(clickedMovie);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
     navigate(`/movies/${movieId}`);
@@ -201,7 +229,9 @@ function Home() {
               <Title>{data?.results[0].title}</Title>
               <Overview>{data?.results[0].overview}</Overview>
             </Banner>
-            <Slider>
+
+            <Slider topsize="-100px">
+              <h1 style={{ fontSize: "30px" }}>Now Playing</h1>
               <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
                 <Row
                   variants={rowVariants}
@@ -235,6 +265,49 @@ function Home() {
                 </Row>
               </AnimatePresence>
             </Slider>
+
+            <Slider topsize="100px">
+              <h1 style={{ fontSize: "30px" }}>Top Rated Movies</h1>
+              <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+                <Row
+                  variants={rowVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  transition={{ type: "tween", duration: 1 }}
+                  key={index}
+                >
+                  {toprated?.results
+                    .slice(1)
+                    .slice(offset * index, offset * index + offset)
+                    .map((movie) => (
+                      <Box
+                        layoutId={movie.id + ""}
+                        onClick={() => {
+                          onBoxClicked(movie.id);
+                        }}
+                        transition={{ type: "tween" }}
+                        key={movie.id}
+                        whileHover="hover"
+                        initial="normal"
+                        variants={BoxVariants}
+                        bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                      >
+                        <Info variants={InfoVariants}>
+                          <h4>{movie.title}</h4>
+                        </Info>
+                      </Box>
+                    ))}
+                </Row>
+              </AnimatePresence>
+            </Slider>
+            <Slider topsize="300px">
+              <h1 style={{ fontSize: "30px" }}>Upcoming Movies</h1>
+            </Slider>
+            <Slider topsize="500px">
+              <h2 style={{ fontSize: "30px" }}>Latest movie</h2>
+              {latest && <>{latest.title}</>}
+            </Slider>
             <AnimatePresence>
               {bigMovieMatch ? (
                 <>
@@ -259,6 +332,26 @@ function Home() {
                         />
                         <BigTitle>{clickedMovie.title}</BigTitle>
                         <BigOverview>{clickedMovie.overview}</BigOverview>
+                      </>
+                    )}
+                    {clickedratedMovie && (
+                      <>
+                        <BigCover
+                          style={{
+                            backgroundImage: `linear-gradient(to top,black,transparent), url(${makeImagePath(
+                              clickedratedMovie.backdrop_path,
+                              "w500"
+                            )})`,
+                          }}
+                        />
+                        <BigTitle>
+                          {clickedratedMovie.title} 💫
+                          {clickedratedMovie.vote_average}{" "}
+                        </BigTitle>
+                        <BigOverview>
+                          Release Date : {clickedratedMovie.release_date}
+                        </BigOverview>
+                        <BigOverview>{clickedratedMovie.overview}</BigOverview>
                       </>
                     )}
                   </BigMovie>
