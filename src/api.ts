@@ -66,4 +66,10 @@ export async function getTopRated() {
     .then((res) => res.data);
 }
 
+export async function getUpcoming() {
+  return await axios
+    .get(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}`)
+    .then((res) => res.data);
+}
 //https://api.themoviedb.org/3/movie/top_rated?api_key=<<api_key>>&language=en-US&page=1
+//https://api.themoviedb.org/3/movie/upcoming?api_key=<<api_key>>&language=en-US&page=1
