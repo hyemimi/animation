@@ -7,13 +7,13 @@ import Tv from "./Routes/Tv";
 function App() {
   return (
     <>
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Header></Header>
         <Routes>
           <Route path={"/tv"} element={<Tv />} />
           <Route path={"/search"} element={<Search />} />
-          <Route path={"/"} element={<Home />} />
           <Route path={"/movies/:movieId"} element={<Home />} />
+          <Route path={"/"} element={<Home />} />
           {/* / 경로는 제일 마지막에 넣기*/}
         </Routes>
       </BrowserRouter>

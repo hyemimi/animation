@@ -13,7 +13,7 @@ import { makeImagePath } from "../utills";
 import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
-
+import scrollleft from "../asset/scrollarrow1_80888.png";
 const Wrapper = styled.div`
   background: black;
   padding-bottom: 200px;
@@ -239,7 +239,17 @@ function Home() {
             </Banner>
 
             <Slider topsize="-100px">
-              <h1 style={{ fontSize: "30px" }}>Now Playing</h1>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "20px",
+                }}
+              >
+                <button>◀️</button>
+                <h1 style={{ fontSize: "30px" }}>Now Playing</h1>
+                <button>▶️</button>
+              </div>
               <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
                 <Row
                   variants={rowVariants}
@@ -275,7 +285,18 @@ function Home() {
             </Slider>
 
             <Slider topsize="100px">
-              <h1 style={{ fontSize: "30px" }}>Top Rated Movies</h1>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "20px",
+                }}
+              >
+                <button>◀️</button>
+                <h1 style={{ fontSize: "30px" }}> Top Rated Movies </h1>
+                <button>▶️</button>
+              </div>
+
               <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
                 <Row
                   variants={rowVariants}
@@ -310,7 +331,18 @@ function Home() {
               </AnimatePresence>
             </Slider>
             <Slider topsize="300px">
-              <h1 style={{ fontSize: "30px" }}>Upcoming Movies</h1>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "20px",
+                }}
+              >
+                <button>◀️</button>
+                <h1 style={{ fontSize: "30px" }}>Upcoming Movies</h1>
+                <button>▶️</button>
+              </div>
+
               <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
                 <Row
                   variants={rowVariants}
