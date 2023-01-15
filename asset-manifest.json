@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/hyemflix/static/js/main.80a0ae9b.js",
+    "main.js": "/hyemflix/static/js/main.d17393d8.js",
     "index.html": "/hyemflix/index.html",
-    "main.80a0ae9b.js.map": "/hyemflix/static/js/main.80a0ae9b.js.map"
+    "main.d17393d8.js.map": "/hyemflix/static/js/main.d17393d8.js.map"
   },
   "entrypoints": [
-    "static/js/main.80a0ae9b.js"
+    "static/js/main.d17393d8.js"
   ]
 }
